@@ -2,14 +2,14 @@
 
 namespace VerticalResponse\Client;
 
+use GuzzleHttp\Psr7\Response;
 use Magento\Framework\HTTP\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use VerticalResponse\Client\Psr7\MagentoRequestResponse;
 
 class MagentoClient implements HttpClient
 {
-    /** @var ClientInterface  */
+    /** @var ClientInterface */
     private $client;
 
     public function __construct(ClientInterface $client)
@@ -19,6 +19,7 @@ class MagentoClient implements HttpClient
 
     /**
      * @param RequestInterface $request
+     *
      * @return ResponseInterface
      */
     public function send(RequestInterface $request)
@@ -37,9 +38,9 @@ class MagentoClient implements HttpClient
             $this->client->post($uri, $contents);
         }
 
-        $response = new MagentoRequestResponse();
+        $response = new Response();
         $headers = $this->client->getHeaders();
-        foreach($headers as $header => $value) {
+        foreach ($headers as $header => $value) {
             $response = $response->withHeader($header, $value);
         }
         $response = $response->withBody(\GuzzleHttp\Psr7\stream_for($this->client->getBody()));
